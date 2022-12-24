@@ -228,12 +228,16 @@ func (p *IndexerIRCParse) ParseMatch(baseURL string, vars map[string]string) (*I
 		if err != nil {
 			return nil, errors.Wrap(err, "could not join torrent url")
 		}
-
+		
 		// reconstruct url
 		torrentUrl, _ := url.Parse(baseUrlPath)
 		torrentUrl.RawQuery = parsedUrl.RawQuery
-
-		matched.TorrentURL = torrentUrl.String()
+		
+		turl := torrentUrl.String()
+		if strings.Contains(turl, "redacted.ch") {
+			turl  = turl+ "&usetoken=1"
+		}
+		matched.TorrentURL = turl
 	}
 
 	if p.Match.TorrentName != "" {
